@@ -159,12 +159,12 @@ void process_command() {
     }
     data_count = 0; // Reset arrays
     unsigned long duration = millis() - start_time;
-    Serial.print("Data collection duration: ");
-    Serial.print(duration);
-    Serial.println(" ms");
-    Serial.print("T sampling: ");
-    Serial.print((float)(duration / 256));
-    Serial.println(" ms");
+    // Serial.print("Data collection duration: ");
+    // Serial.print(duration);
+    // Serial.println(" ms");
+    // Serial.print("T sampling: ");
+    // Serial.print((float)(duration / 256));
+    // Serial.println(" ms");
     String timedata = String(duration);
     start_time = millis(); // Start new time measurement
   }
@@ -193,11 +193,11 @@ void reconnect() {
   while (!client.connected()) {
     String channel = String(WiFi.macAddress());
     if (client.connect(channel.c_str())) {
-      Serial.println("broker connected");
+      // Serial.println("broker connected");
     } else {
-      Serial.print("Failed to connect to MQTT broker, rc=");
-      Serial.print(client.state());
-      Serial.println(" Retrying in 5 seconds...");
+      // Serial.print("Failed to connect to MQTT broker, rc=");
+      // Serial.print(client.state());
+      // Serial.println(" Retrying in 5 seconds...");
       vTaskDelay(5000 / portTICK_PERIOD_MS);
     }
   }
@@ -245,7 +245,7 @@ void publish_buffer(byte buffer_loc) {
 
 void cek_sensor() {
   if (millis() - sensor_wdg > 5000) {
-    Serial.println("sensor not responding, trying to recall");
+    // Serial.println("sensor not responding, trying to recall");
     ESP.restart();
   }
 }
@@ -332,22 +332,34 @@ void parse_serial() {
       ESP.restart();
     }
     else if (command == ">getVAR:") {
-      Serial.println("GETVAR:");
-      Serial.print("SSID:"); Serial.println(readString(MSTR0));
-      Serial.print("len:"); Serial.println(readString(MSTR0).length());
-      vTaskDelay(1 / portTICK_PERIOD_MS);
+      // Serial.println("GETVAR:");
+      // Serial.print("SSID:"); Serial.println(readString(MSTR0));
+      // Serial.print("len:"); Serial.println(readString(MSTR0).length());
+      // vTaskDelay(1 / portTICK_PERIOD_MS);
       
-      Serial.print("WIFI_PASS:"); Serial.println(readString(MSTR1));
-      Serial.print("len:"); Serial.println(readString(MSTR1).length());
-      vTaskDelay(1 / portTICK_PERIOD_MS);
+      // Serial.print("WIFI_PASS:"); Serial.println(readString(MSTR1));
+      // Serial.print("len:"); Serial.println(readString(MSTR1).length());
+      // vTaskDelay(1 / portTICK_PERIOD_MS);
       
-      Serial.print("BROKER:"); Serial.println(readString(MSTR2));
-      Serial.print("len:"); Serial.println(readString(MSTR2).length());
-      vTaskDelay(1 / portTICK_PERIOD_MS);
+      // Serial.print("BROKER:"); Serial.println(readString(MSTR2));
+      // Serial.print("len:"); Serial.println(readString(MSTR2).length());
+      // vTaskDelay(1 / portTICK_PERIOD_MS);
       
-      Serial.print("TOPIC:"); Serial.println(readString(MSTR3));
-      Serial.print("len:"); Serial.println(readString(MSTR3).length());
-      vTaskDelay(1 / portTICK_PERIOD_MS);
+      // Serial.print("TOPIC:"); Serial.println(readString(MSTR3));
+      // Serial.print("len:"); Serial.println(readString(MSTR3).length());
+      // vTaskDelay(1 / portTICK_PERIOD_MS);
+      // Create a JSON response string
+      String jsonResponse = "{\n";
+      jsonResponse += "  \"setup_var\": {\n";
+      jsonResponse += "    \"SSID\":\"" + readString(MSTR0) + "\",\n";
+      jsonResponse += "    \"password\":\"" + readString(MSTR1) + "\",\n";
+      jsonResponse += "    \"broker\":\"" + readString(MSTR2) + "\",\n";
+      jsonResponse += "    \"topic\":\"" + readString(MSTR3) + "\"\n";
+      jsonResponse += "  }\n";
+      jsonResponse += "}\n";
+
+      // Send the JSON response over Serial
+      Serial.println(jsonResponse);
     }
     else {
       Serial.println("ERROR");

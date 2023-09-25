@@ -16,8 +16,8 @@ void mqtt_sender(void *arguments) {
 
   client.setServer(buf_broker, mqtt_port);
   boolean res = client.setBufferSize(0xffff - 1);
-  if (res) Serial.println("Buffer resized.");
-  else Serial.println("Buffer resizing failed");
+  // if (res) Serial.println("Buffer resized.");
+  // else Serial.println("Buffer resizing failed");
 
   String topic = readString(MSTR3);
 
@@ -51,10 +51,11 @@ void serial_handler(void *arguments) {
       if (char_in != '\n') {
         msg_in += char_in;
       }
+      sensor_wdg = millis();
     }
 
     if (millis() - no_serial_in_wdg > 50 && msg_in.length() > 0) {
-      Serial.println(msg_in);
+      // Serial.println(msg_in);
       parse_serial();
       msg_in = "";
       Serial.flush();
@@ -100,14 +101,14 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     vTaskDelay(500 / portTICK_PERIOD_MS);
     digitalWrite(2, !digitalRead(2));
-    Serial.print("Connecting to "); Serial.println(buf_SSID);
-    Serial.print("with password "); Serial.println(buf_PWD);
+    // Serial.print("Connecting to "); Serial.println(buf_SSID);
+    // Serial.print("with password "); Serial.println(buf_PWD);
     if (millis() - wlan_timer > 20000) {
-      Serial.println("WiFi Error");
+      // Serial.println("WiFi Error");
       ESP.restart();
     }
   }
-  Serial.println("Connected to WiFi");
+  // Serial.println("Connected to WiFi");
   digitalWrite(2, 1);
   vTaskDelay(1000 / portTICK_PERIOD_MS);
 

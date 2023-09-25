@@ -11,13 +11,15 @@ import threading
 from threading import Event
 import serial
 import serial.tools.list_ports
+import json
 
 import node_setup
 
 serial_attributes = {
     'available_ports':[],
     'available_ports_displayed':0,
-    'reader_serial_obj':None
+    'reader_serial_obj':None,
+    'node_saved_info':{}
 }
 
 class app(node_setup.Ui_MainWindow):
@@ -80,19 +82,28 @@ class app(node_setup.Ui_MainWindow):
         print(self.tb_password)
 
         self.serial_comm.transmit(f">setssid:{self.tb_ssid}")
-        time.sleep(0.3)
+        time.sleep(0.5)
         self.serial_comm.transmit(f">setpwd:{self.tb_password}")
-        time.sleep(0.3)
+        time.sleep(0.5)
         self.serial_comm.transmit(f">settopic:{self.tb_id}")
-        time.sleep(0.3)
+        time.sleep(0.5)
         self.serial_comm.transmit(f">setbroker:{self.tb_broker}")
-        time.sleep(0.3)
+        time.sleep(0.5)
         self.serial_comm.transmit(">reboot:")
-        time.sleep(0.3)
+        time.sleep(0.5)
 
     def read_device_info(self):
         if(self.serial_comm.serial.is_open):
             self.serial_comm.transmit('>getVAR:')
+            print(serial_attributes['node_saved_info'])
+            try:
+                self.window1Main.tb_broker.setText(serial_attributes['node_saved_info']['setup_var']['broker'])
+                self.window1Main.tb_ssid.setText(serial_attributes['node_saved_info']['setup_var']['SSID'])
+                self.window1Main.tb_password.setText(serial_attributes['node_saved_info']['setup_var']['password'])
+                self.window1Main.tb_id.setText(serial_attributes['node_saved_info']['setup_var']['topic'])
+                serial_attributes['node_saved_info'] = {}
+            except:
+                pass
 
 
 
@@ -198,12 +209,24 @@ class serial_comm():
         except:
             pass
 
+
+t_waiting  = time.time()
+data_serial = ""
 def read_serial_data(stop_event):
+    global t_waiting
     while not stop_event.is_set():
+        if time.time()-t_waiting > 0.002:
+            try:
+                serial_attributes['node_saved_info'] = json.loads(data_serial)
+            except:
+                pass
+            data_serial = ""
         try:
             data = serial_attributes['reader_serial_obj'].readline().decode().strip()
             if data:
-                print(f"Received data: {data}")
+                t_waiting  = time.time()
+                data_serial+=str(data)
+                # print(data_serial)
         except Exception as e:
             print(e)
         time.sleep(1/1000)
