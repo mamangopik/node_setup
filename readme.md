@@ -16,5 +16,5 @@ mengatur variable settings untuk alat transmitter pada perangkat SHMS simon bata
 -pyserial
 
 <h1>Instalasi</h1>
-1.convert file .ui dengan script <1>python3 convert.py</1>
-2. untuk menjalankan program <1>python3 main.py</1>
+1.convert file .ui dengan script <i>python3 convert.py</i>
+2. untuk menjalankan program <i>python3 main.py</i>
