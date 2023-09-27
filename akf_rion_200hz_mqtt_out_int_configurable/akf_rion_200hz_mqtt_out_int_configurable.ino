@@ -55,7 +55,7 @@ void serial_handler(void *arguments) {
     }
 
     if (millis() - no_serial_in_wdg > 50 && msg_in.length() > 0) {
-      // Serial.println(msg_in);
+      Serial.println(msg_in);
       parse_serial();
       msg_in = "";
       Serial.flush();

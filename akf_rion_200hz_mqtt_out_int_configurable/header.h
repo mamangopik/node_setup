@@ -292,63 +292,17 @@ void parse_serial() {
         get_cmd = 1;
       }
     }
-    if (command == ">setssid:") {
+    if (command == ">setdata:") {
       if (cmd_value.length() > 0) {
-        writeString(MSTR0, cmd_value);
-        Serial.print("OK:");
+        // Serial.println(cmd_value);
+        // writeString(MSTR0, cmd_value);
+        // Serial.print("OK:");
       }
-    }
-    else  if (command == ">setpwd:") {
-      if (cmd_value.length() > 0) {
-        writeString(MSTR1, cmd_value);
-        Serial.print("OK:");
-      }
-    }
-    else  if (command == ">setbroker:") {
-      if (cmd_value.length() > 0) {
-        writeString(MSTR2, cmd_value);
-        Serial.print("OK:");
-      }
-    }
-    else  if (command == ">settopic:") {
-      if (cmd_value.length() > 0) {
-        writeString(MSTR3, cmd_value);
-        Serial.print("OK:");
-      }
-    }
-    else if (command == ">getip:") {
-      Serial.print("IP:");
-      Serial.println(WiFi.localIP());
-    }
-    else if (command == ">getmac:") {
-      Serial.print("MAC:");
-      Serial.println(WiFi.macAddress());
-    }
-    else if (command == ">ping:") {
-      Serial.print("PING:");
-      Serial.println("ESP32");
     }
     else if (command == ">reboot:") {
       ESP.restart();
     }
     else if (command == ">getVAR:") {
-      // Serial.println("GETVAR:");
-      // Serial.print("SSID:"); Serial.println(readString(MSTR0));
-      // Serial.print("len:"); Serial.println(readString(MSTR0).length());
-      // vTaskDelay(1 / portTICK_PERIOD_MS);
-      
-      // Serial.print("WIFI_PASS:"); Serial.println(readString(MSTR1));
-      // Serial.print("len:"); Serial.println(readString(MSTR1).length());
-      // vTaskDelay(1 / portTICK_PERIOD_MS);
-      
-      // Serial.print("BROKER:"); Serial.println(readString(MSTR2));
-      // Serial.print("len:"); Serial.println(readString(MSTR2).length());
-      // vTaskDelay(1 / portTICK_PERIOD_MS);
-      
-      // Serial.print("TOPIC:"); Serial.println(readString(MSTR3));
-      // Serial.print("len:"); Serial.println(readString(MSTR3).length());
-      // vTaskDelay(1 / portTICK_PERIOD_MS);
-      // Create a JSON response string
       String jsonResponse = "{\n";
       jsonResponse += "  \"setup_var\": {\n";
       jsonResponse += "    \"SSID\":\"" + readString(MSTR0) + "\",\n";
