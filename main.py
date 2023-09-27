@@ -81,13 +81,16 @@ class app(node_setup.Ui_MainWindow):
         print(self.tb_ssid)
         print(self.tb_password)
 
-        self.serial_comm.transmit(f">setssid:{self.tb_ssid}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(f">setpwd:{self.tb_password}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(f">settopic:{self.tb_id}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(f">setbroker:{self.tb_broker}")
+        setup_data = {
+            'ssid':self.tb_ssid,
+            'password':self.tb_password,
+            'broker':self.tb_broker,
+            'topic':self.tb_id
+        }
+        setup_data = json.dumps(setup_data)
+        setup_data = str(setup_data)
+
+        self.serial_comm.transmit(f">setdata:{setup_data}")
         time.sleep(0.5)
         self.serial_comm.transmit(">reboot:")
         time.sleep(0.5)
