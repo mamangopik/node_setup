@@ -1,20 +1,35 @@
-<h1>Fungsi</h1>
-mengatur variable settings untuk alat transmitter pada perangkat SHMS simon batapa Politeknik Negeri Jakarta
-<h1>Parameter yang diatur</h1>
--WiFi credentials
--MQTT Broker
--MQTT Topic
--Sinkronisasi RTC
-<h1>Protokol Komunikasi</h1>
--UART 115200bps , Parity None , 8 bytes, 1 stopbits.
--custom protocol
-<h1>Requirenment</h1>
--python versi 3.7 atau lebih tinggi
--PyQt5
--pyqtgraph
--QT Designer
--pyserial
+# SHMS Simon Batapa Tool Settings
 
-<h1>Instalasi</h1>
-1.convert file .ui dengan script <i>python3 convert.py</i>
-2. untuk menjalankan program <i>python3 main.py</i>
+## Deskripsi
+Aplikasi ini digunakan untuk mengatur pengaturan alat transmitter pada perangkat SHMS Simon Batapa Politeknik Negeri Jakarta.
+
+## Spesifikasi Hardware
+- CPU: ESP32
+- Sensor Accelerometer: RION AKF-934
+
+## Parameter yang Diatur
+Aplikasi ini memungkinkan pengaturan berikut:
+- Kredensial WiFi
+- MQTT Broker
+- MQTT Topic
+- Sinkronisasi RTC
+
+## Protokol Komunikasi
+- UART 115200bps
+- Parity None
+- 8 bit data
+- 1 stop bit
+- Protokol kustom antara node sensor dengan aplikasi
+- Protokol RION 68
+
+## Requirement
+Pastikan Anda memiliki berikut ini sebelum menjalankan aplikasi:
+- Python versi 3.7 atau yang lebih tinggi
+- PyQt5
+- pyqtgraph
+- QT Designer
+- pyserial
+
+## Instalasi
+1. Konversi file .ui menggunakan skrip `python3 convert.py`.
+2. Untuk menjalankan program, gunakan perintah `python3 main.py`.

@@ -19,18 +19,12 @@ serial_attributes = {
     'available_ports':[],
     'available_ports_displayed':0,
     'reader_serial_obj':None,
-    'node_saved_info':{}
+    'node_saved_info':{},
+    'raw_serial_in':''
 }
 
 class app(node_setup.Ui_MainWindow):
     def __init__(self,attrributes):
-        # app = app widget
-        # window = window widget
-        # ui = ui_instance()
-        # ui.setupUi(window widget)
-        # ui.retretranslateUira(window widget)
-        # window widget.show()
-        # sys.exit(app widget.exec())
         super(node_setup.Ui_MainWindow, self).__init__()
         app1 = QtWidgets.QApplication(sys.argv)
         window = QtWidgets.QMainWindow()
@@ -81,20 +75,24 @@ class app(node_setup.Ui_MainWindow):
         print(self.tb_ssid)
         print(self.tb_password)
 
-        self.serial_comm.transmit(f">setssid:{self.tb_ssid}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(f">setpwd:{self.tb_password}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(f">settopic:{self.tb_id}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(f">setbroker:{self.tb_broker}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(">reboot:")
-        time.sleep(0.5)
+        setup_data = {
+            'ssid':self.tb_ssid,
+            'password':self.tb_password,
+            'broker':self.tb_broker,
+            'topic':self.tb_id
+        }
+        setup_data = str(json.dumps(setup_data))
+        self.serial_comm.transmit(f">setdata:{setup_data}")
 
     def read_device_info(self):
         if(self.serial_comm.serial.is_open):
+            serial_attributes['raw_serial_in']=""
             self.serial_comm.transmit('>getVAR:')
+            
+    def sello(self):
+        print('sello')
+    def update(self):
+        if serial_attributes['node_saved_info'] is not {}:
             print(serial_attributes['node_saved_info'])
             try:
                 self.window1Main.tb_broker.setText(serial_attributes['node_saved_info']['setup_var']['broker'])
@@ -102,14 +100,15 @@ class app(node_setup.Ui_MainWindow):
                 self.window1Main.tb_password.setText(serial_attributes['node_saved_info']['setup_var']['password'])
                 self.window1Main.tb_id.setText(serial_attributes['node_saved_info']['setup_var']['topic'])
                 serial_attributes['node_saved_info'] = {}
-            except:
-                pass
-
-
-
-    def sello(self):
-        print('sello')
-    def update(self):
+            except Exception as e:
+                print(e)
+        try:
+            if(self.serial_comm.serial.is_open):
+                self.window1Main.con_indicator.setStyleSheet("background-color: lime;border-radius:5px;")
+            else:
+                self.window1Main.con_indicator.setStyleSheet("background-color: red;border-radius:5px;")
+        except Exception as e:
+            print(e)
         if(serial_attributes['available_ports_displayed']==1):
             if(self.old_ports_available!=serial_attributes['available_ports']):
                 self.window1Main.lb_port.clear()
@@ -146,10 +145,6 @@ class app(node_setup.Ui_MainWindow):
         self.serial_listener.join()
         time.sleep(1)
         print('bye')
-
-
-
-
 
 class serial_comm():
     def __init__(self):
@@ -209,26 +204,27 @@ class serial_comm():
         except:
             pass
 
-
-t_waiting  = time.time()
-data_serial = ""
 def read_serial_data(stop_event):
-    global t_waiting
     while not stop_event.is_set():
-        if time.time()-t_waiting > 0.002:
-            try:
-                serial_attributes['node_saved_info'] = json.loads(data_serial)
-            except:
-                pass
-            data_serial = ""
         try:
-            data = serial_attributes['reader_serial_obj'].readline().decode().strip()
-            if data:
+            try:
+                if len(serial_attributes['raw_serial_in'])>10:
+                    serial_attributes['node_saved_info'] = json.loads(serial_attributes['raw_serial_in'])
+                    serial_attributes['raw_serial_in'] = ""
+                    print("data extracted from the node")
+            except Exception as e:
+                print(e)
+            try:
+                data = serial_attributes['reader_serial_obj'].readline().decode().strip()
+            except Exception as e:
+                print (e)
+                data = None
+            if data is not None:
                 t_waiting  = time.time()
-                data_serial+=str(data)
-                # print(data_serial)
-        except Exception as e:
-            print(e)
+                serial_attributes['raw_serial_in']+=str(data)
+                print(serial_attributes['raw_serial_in'])
+        except:
+            pass
         time.sleep(1/1000)
     print('bye bye')
 

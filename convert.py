@@ -2,8 +2,12 @@ import sys
 import os
 import subprocess
 
-ui = sys.argv[1]
-target = sys.argv[2]
+try:
+    ui = sys.argv[1]
+    target = sys.argv[2]
+except:
+    ui = 'node_setup'
+    target = 'node_setup'
 
 # Use subprocess to run the command on Ubuntu
 command = f'python -m PyQt5.uic.pyuic -x {ui}.ui -o {target}.py'
