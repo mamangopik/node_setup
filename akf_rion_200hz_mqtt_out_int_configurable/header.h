@@ -294,7 +294,7 @@ void parse_serial() {
     }
     if (command == ">setdata:") {
       if (cmd_value.length() > 0) {
-        // Serial.println(cmd_value);
+        Serial.println(cmd_value);
         // writeString(MSTR0, cmd_value);
         // Serial.print("OK:");
       }

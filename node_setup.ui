@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>497</width>
-    <height>489</height>
+    <height>387</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,7 +30,7 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>73</x>
+      <x>20</x>
       <y>10</y>
       <width>67</width>
       <height>17</height>
@@ -149,6 +149,22 @@
     </property>
     <property name="text">
      <string>SYNC RTC</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>10</y>
+      <width>16</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color:rgb(239, 41, 41);border-radius:5px</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

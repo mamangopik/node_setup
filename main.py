@@ -87,13 +87,13 @@ class app(node_setup.Ui_MainWindow):
             'broker':self.tb_broker,
             'topic':self.tb_id
         }
-        setup_data = json.dumps(setup_data)
-        setup_data = str(setup_data)
+
+        setup_data = str(json.dumps(setup_data))
 
         self.serial_comm.transmit(f">setdata:{setup_data}")
-        time.sleep(0.5)
-        self.serial_comm.transmit(">reboot:")
-        time.sleep(0.5)
+        # time.sleep(0.5)
+        # self.serial_comm.transmit(">reboot:")
+        # time.sleep(0.5)
 
     def read_device_info(self):
         if(self.serial_comm.serial.is_open):
@@ -218,7 +218,7 @@ data_serial = ""
 def read_serial_data(stop_event):
     global t_waiting
     while not stop_event.is_set():
-        if time.time()-t_waiting > 0.002:
+        if float(time.time()-t_waiting) > float(100/1000000):
             try:
                 serial_attributes['node_saved_info'] = json.loads(data_serial)
             except:
@@ -226,12 +226,13 @@ def read_serial_data(stop_event):
             data_serial = ""
         try:
             data = serial_attributes['reader_serial_obj'].readline().decode().strip()
-            if data:
-                t_waiting  = time.time()
-                data_serial+=str(data)
-                # print(data_serial)
         except Exception as e:
             print(e)
+            data = None
+        if data is not None:
+            t_waiting  = time.time()
+            data_serial+=str(data)
+            print(data_serial)
         time.sleep(1/1000)
     print('bye bye')
 
