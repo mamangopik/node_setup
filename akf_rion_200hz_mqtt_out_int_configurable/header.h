@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <esp_task_wdt.h>
 #include <EEPROM.h>
+#include "jsonparser.h"
 
 #define RXD2 16
 #define TXD2 17
@@ -294,9 +295,12 @@ void parse_serial() {
     }
     if (command == ">setdata:") {
       if (cmd_value.length() > 0) {
-        Serial.println(cmd_value);
-        // writeString(MSTR0, cmd_value);
-        // Serial.print("OK:");
+        parseJsonData(cmd_value);
+        // Extract individual keys
+        writeString(MSTR0, ssid);
+        writeString(MSTR1, password);
+        writeString(MSTR2, broker);
+        writeString(MSTR3, topic);
       }
     }
     else if (command == ">reboot:") {

@@ -19,7 +19,8 @@ serial_attributes = {
     'available_ports':[],
     'available_ports_displayed':0,
     'reader_serial_obj':None,
-    'node_saved_info':{}
+    'node_saved_info':{},
+    'raw_serial_in':''
 }
 
 class app(node_setup.Ui_MainWindow):
@@ -97,6 +98,7 @@ class app(node_setup.Ui_MainWindow):
 
     def read_device_info(self):
         if(self.serial_comm.serial.is_open):
+            serial_attributes['raw_serial_in']=""
             self.serial_comm.transmit('>getVAR:')
             print(serial_attributes['node_saved_info'])
             try:
@@ -113,6 +115,13 @@ class app(node_setup.Ui_MainWindow):
     def sello(self):
         print('sello')
     def update(self):
+        try:
+            if(self.serial_comm.serial.is_open):
+                self.window1Main.con_indicator.setStyleSheet("background-color: lime;border-radius:5px;")
+            else:
+                self.window1Main.con_indicator.setStyleSheet("background-color: red;border-radius:5px;")
+        except Exception as e:
+            print(e)
         if(serial_attributes['available_ports_displayed']==1):
             if(self.old_ports_available!=serial_attributes['available_ports']):
                 self.window1Main.lb_port.clear()
@@ -212,27 +221,27 @@ class serial_comm():
         except:
             pass
 
-
-t_waiting  = time.time()
-data_serial = ""
 def read_serial_data(stop_event):
-    global t_waiting
     while not stop_event.is_set():
-        if float(time.time()-t_waiting) > float(100/1000000):
-            try:
-                serial_attributes['node_saved_info'] = json.loads(data_serial)
-            except:
-                pass
-            data_serial = ""
         try:
-            data = serial_attributes['reader_serial_obj'].readline().decode().strip()
-        except Exception as e:
-            print(e)
-            data = None
-        if data is not None:
-            t_waiting  = time.time()
-            data_serial+=str(data)
-            print(data_serial)
+            try:
+                if len(serial_attributes['raw_serial_in'])>10:
+                    serial_attributes['node_saved_info'] = json.loads(serial_attributes['raw_serial_in'])
+                    serial_attributes['raw_serial_in'] = ""
+                    print("data extracted from the node")
+            except Exception as e:
+                print(e)
+            try:
+                data = serial_attributes['reader_serial_obj'].readline().decode().strip()
+            except Exception as e:
+                print (e)
+                data = None
+            if data is not None:
+                t_waiting  = time.time()
+                serial_attributes['raw_serial_in']+=str(data)
+                print(serial_attributes['raw_serial_in'])
+        except:
+            pass
         time.sleep(1/1000)
     print('bye bye')
 
