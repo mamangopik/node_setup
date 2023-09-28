@@ -25,13 +25,6 @@ serial_attributes = {
 
 class app(node_setup.Ui_MainWindow):
     def __init__(self,attrributes):
-        # app = app widget
-        # window = window widget
-        # ui = ui_instance()
-        # ui.setupUi(window widget)
-        # ui.retretranslateUira(window widget)
-        # window widget.show()
-        # sys.exit(app widget.exec())
         super(node_setup.Ui_MainWindow, self).__init__()
         app1 = QtWidgets.QApplication(sys.argv)
         window = QtWidgets.QMainWindow()
@@ -88,18 +81,18 @@ class app(node_setup.Ui_MainWindow):
             'broker':self.tb_broker,
             'topic':self.tb_id
         }
-
         setup_data = str(json.dumps(setup_data))
-
         self.serial_comm.transmit(f">setdata:{setup_data}")
-        # time.sleep(0.5)
-        # self.serial_comm.transmit(">reboot:")
-        # time.sleep(0.5)
 
     def read_device_info(self):
         if(self.serial_comm.serial.is_open):
             serial_attributes['raw_serial_in']=""
             self.serial_comm.transmit('>getVAR:')
+            
+    def sello(self):
+        print('sello')
+    def update(self):
+        if serial_attributes['node_saved_info'] is not {}:
             print(serial_attributes['node_saved_info'])
             try:
                 self.window1Main.tb_broker.setText(serial_attributes['node_saved_info']['setup_var']['broker'])
@@ -107,14 +100,8 @@ class app(node_setup.Ui_MainWindow):
                 self.window1Main.tb_password.setText(serial_attributes['node_saved_info']['setup_var']['password'])
                 self.window1Main.tb_id.setText(serial_attributes['node_saved_info']['setup_var']['topic'])
                 serial_attributes['node_saved_info'] = {}
-            except:
-                pass
-
-
-
-    def sello(self):
-        print('sello')
-    def update(self):
+            except Exception as e:
+                print(e)
         try:
             if(self.serial_comm.serial.is_open):
                 self.window1Main.con_indicator.setStyleSheet("background-color: lime;border-radius:5px;")
@@ -158,10 +145,6 @@ class app(node_setup.Ui_MainWindow):
         self.serial_listener.join()
         time.sleep(1)
         print('bye')
-
-
-
-
 
 class serial_comm():
     def __init__(self):

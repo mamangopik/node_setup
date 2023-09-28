@@ -43,12 +43,12 @@ void parseJsonData(const String &jsonData) {
   }
 
   // Print the extracted values
-  Serial.print("SSID: ");
-  Serial.println(ssid);
-  Serial.print("Password: ");
-  Serial.println(password);
-  Serial.print("Broker: ");
-  Serial.println(broker);
-  Serial.print("Topic: ");
-  Serial.println(topic);
+//   Serial.print("SSID: ");
+//   Serial.println(ssid);
+//   Serial.print("Password: ");
+//   Serial.println(password);
+//   Serial.print("Broker: ");
+//   Serial.println(broker);
+//   Serial.print("Topic: ");
+//   Serial.println(topic);
 }

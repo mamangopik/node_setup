@@ -3,22 +3,13 @@
 void mqtt_sender(void *arguments) {
   vTaskDelay(100 / portTICK_PERIOD_MS);
 
-  //  const char* mqtt_server = readString(MSTR2).c_str();
-  //  const char* mqtt_server = "broker.hivemq.com";
   const int mqtt_port = 1883;
-  //  const char* mqtt_topic = readString(MSTR0).c_str();
-
   String broker = readString(MSTR2);
   broker.trim();
   char buf_broker[100];
   broker.toCharArray(buf_broker, broker.length() + 1);
-
-
   client.setServer(buf_broker, mqtt_port);
   boolean res = client.setBufferSize(0xffff - 1);
-  // if (res) Serial.println("Buffer resized.");
-  // else Serial.println("Buffer resizing failed");
-
   String topic = readString(MSTR3);
 
   while (1) {
