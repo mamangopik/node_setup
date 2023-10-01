@@ -25,6 +25,8 @@ void parse_serial() {
         writeString(MSTR1, password);
         writeString(MSTR2, broker);
         writeString(MSTR3, topic);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        ESP.restart();
       }
     }
     else if (command == ">reboot:") {

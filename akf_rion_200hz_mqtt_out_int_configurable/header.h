@@ -5,7 +5,6 @@
 
 
 // user typedef
-
 #define RXD2 16
 #define TXD2 17
 #define EEPROM_SIZE 1024
@@ -52,6 +51,12 @@ unsigned long no_serial_in_wdg = 0;
 
 // Function declarations
 
+//RTOS tasks
+void mqtt_sender(void *arguments);
+void serial_handler(void *arguments);
+void led_status(void *arguments);
+void sensor_reader( void * pvParameters );
+
 // WiFi and MQTT-related functions
 void reconnect();
 void publish_buffer(byte buffer_loc);
@@ -83,3 +88,4 @@ void parseJsonData(const String &jsonData);
 #include "eepromstorage.h"
 #include "sensorutils.h"
 #include "mqttutils.h"
+#include "rtostasks.h"
