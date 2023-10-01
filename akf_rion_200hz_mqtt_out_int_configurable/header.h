@@ -82,7 +82,6 @@ void parse_serial();
 void parseJsonData(const String &jsonData);
 
 // include functions that need global variables
-#include "core0_task.h"
 #include "jsonparser.h"
 #include "serialparser.h"
 #include "eepromstorage.h"
