@@ -4,9 +4,9 @@ void Task2code( void * pvParameters ) {
   sensor_wdg = millis();
   set_autorate();
   for (;;) {
-    // if (WiFi.status() == WL_DISCONNECTED) {
-    //   ESP.restart();
-    // }
+    if (WiFi.status() == WL_DISCONNECTED) {
+      ESP.restart();
+    }
     cek_sensor();
     while (Serial2.available() > 0) {
       cek_sensor();
