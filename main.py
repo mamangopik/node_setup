@@ -12,6 +12,7 @@ from threading import Event
 import serial
 import serial.tools.list_ports
 import json
+from datetime import datetime
 
 import node_setup
 
@@ -56,7 +57,7 @@ class app(node_setup.Ui_MainWindow):
 
         self.window1Main.btn_write.clicked.connect(self.write_data)
         self.window1Main.btn_read.clicked.connect(self.read_device_info)
-        self.window1Main.btn_sync_rtc.clicked.connect(self.sello)
+        self.window1Main.btn_sync_rtc.clicked.connect(self.rtc_sync)
         self.window1Main.lb_port.itemDoubleClicked.connect(self.port_clicked)
 
         self.window1Main.retranslateUi(window)
@@ -89,8 +90,22 @@ class app(node_setup.Ui_MainWindow):
             serial_attributes['raw_serial_in']=""
             self.serial_comm.transmit('>getVAR:')
             
-    def sello(self):
-        print('sello')
+    def rtc_sync(self):
+        # Get the current date and time
+        current_datetime = datetime.now()
+        # Extract date and time components
+        date_components = {
+            "year": current_datetime.year,
+            "month": current_datetime.month,
+            "day": current_datetime.day,
+            "hour": current_datetime.hour,
+            "minute": current_datetime.minute,
+            "second": current_datetime.second
+        }
+        print(date_components)
+        json_string = json.dumps(date_components)
+        self.serial_comm.transmit(f">setdata:{json_string}")
+
     def update(self):
         if serial_attributes['node_saved_info'] is not {}:
             print(serial_attributes['node_saved_info'])
@@ -120,7 +135,7 @@ class app(node_setup.Ui_MainWindow):
 
     def port_clicked(self, clickedItem):
         print("port" + clickedItem.text() + "got clicked")
-        self.serial_comm.config_serial(str(clickedItem.text()),115200)
+        self.serial_comm.config_serial(str(clickedItem.text()),9600)
         self.serial_comm.open()
         self.reader_start_time = time.time()
 
