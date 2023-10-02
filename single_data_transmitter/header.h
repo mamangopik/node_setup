@@ -59,10 +59,10 @@ void sensor_reader( void * pvParameters );
 
 // WiFi and MQTT-related functions
 void reconnect();
-void publish_buffer(byte buffer_loc);
+void publish_buffer();
 
 // Sensor and hardware control functions
-void void read_sensor();
+void read_sensor();
 
 // EEPROM data read/write functions
 void writeString(uint16_t address, String data);

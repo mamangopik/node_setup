@@ -60,7 +60,7 @@ void led_status(void *arguments) {
       vTaskDelay(100 / portTICK_PERIOD_MS);
     }else{
       digitalWrite(2, !digitalRead(2));
-      vTaskDelay(500 / portTICK_PERIOD_MS);
+      vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
   }

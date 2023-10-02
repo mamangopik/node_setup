@@ -9,9 +9,9 @@ void reconnect() {
   }
 }
 
-void publish_buffer(byte buffer_loc) {
+void publish_buffer() {
   String json_data;
-  json_data = "{}";
+  json_data = String(random(31,32));
 
   sensor_topic.trim();
   char buf_sensor_topic[100];
