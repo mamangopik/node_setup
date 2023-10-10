@@ -102,13 +102,11 @@ class app(node_setup.Ui_MainWindow):
             "minute": current_datetime.minute,
             "second": current_datetime.second
         }
-        print(date_components)
         json_string = json.dumps(date_components)
         self.serial_comm.transmit(f">setdata:{json_string}")
 
     def update(self):
         if serial_attributes['node_saved_info'] is not {}:
-            print(serial_attributes['node_saved_info'])
             try:
                 self.window1Main.tb_broker.setText(serial_attributes['node_saved_info']['setup_var']['broker'])
                 self.window1Main.tb_ssid.setText(serial_attributes['node_saved_info']['setup_var']['SSID'])
@@ -135,7 +133,7 @@ class app(node_setup.Ui_MainWindow):
 
     def port_clicked(self, clickedItem):
         print("port" + clickedItem.text() + "got clicked")
-        self.serial_comm.config_serial(str(clickedItem.text()),9600)
+        self.serial_comm.config_serial(str(clickedItem.text()),115200)
         self.serial_comm.open()
         self.reader_start_time = time.time()
 

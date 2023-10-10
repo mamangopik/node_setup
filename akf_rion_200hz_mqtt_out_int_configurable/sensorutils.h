@@ -1,6 +1,6 @@
 void cek_sensor() {
   if (millis() - sensor_wdg > 5000) {
-    // Serial.println("sensor not responding, trying to recall");
+    Serial.println("sensor not responding, trying to recall");
     ESP.restart();
   }
 }

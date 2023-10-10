@@ -16,6 +16,7 @@ void mqtt_sender(void *arguments) {
     }
 
     if (WiFi.status() == WL_DISCONNECTED) {
+      Serial.println("wifi error");
       ESP.restart();
     }
     client.loop();
@@ -72,9 +73,6 @@ void sensor_reader( void * pvParameters ) {
   sensor_wdg = millis();
   set_autorate();
   for (;;) {
-    if (WiFi.status() == WL_DISCONNECTED) {
-      ESP.restart();
-    }
     cek_sensor();
     while (Serial2.available() > 0) {
       cek_sensor();

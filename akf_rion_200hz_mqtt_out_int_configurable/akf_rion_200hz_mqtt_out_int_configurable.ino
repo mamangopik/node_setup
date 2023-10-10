@@ -14,17 +14,6 @@ void setup() {
     NULL,      /* Task handle to keep track of created task */
     1);          /* pin task to core 1 */
 
-  xTaskCreatePinnedToCore(
-    led_status, 
-    "led status",
-    1024, 
-    NULL, 
-    8, 
-    NULL, 
-    1); 
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
-
-
   wlan_timer = millis();
   String ssid = readString(MSTR0);
   String password = readString(MSTR1);
@@ -41,19 +30,28 @@ void setup() {
   WiFi.mode(WIFI_STA);
   WiFi.begin(buf_SSID, buf_PWD);
   while (WiFi.status() != WL_CONNECTED) {
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    if (millis() - wlan_timer > 20000) {
-      // Serial.println("WiFi Error");
+    delay(500);
+    if (millis() - wlan_timer > 10000) {
+      Serial.println("WiFi Error");
       ESP.restart();
     }
   }
-  // Serial.println("Connected to WiFi");
+  Serial.println("Connected to WiFi");
   vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+  xTaskCreatePinnedToCore(
+    led_status, 
+    "led status",
+    1024, 
+    NULL, 
+    2, 
+    NULL, 
+    1); 
 
   xTaskCreatePinnedToCore(
     sensor_reader, 
     "sensor reader",
-    10000,
+    2048,
     NULL,
     1,
     &Task2,
@@ -62,7 +60,7 @@ void setup() {
   xTaskCreatePinnedToCore(
     mqtt_sender, 
     "mqtt sender",
-    4096, 
+    2048, 
     NULL, 
     1, 
     NULL,
