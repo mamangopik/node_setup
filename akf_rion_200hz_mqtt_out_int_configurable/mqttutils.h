@@ -32,9 +32,7 @@ void publish_buffer(byte buffer_loc) {
       json_data += ",";
     }
   }
-  json_data += "],\"id\":";
-  json_data += String(id_data);
-  json_data += ',';
+  json_data += "],";
   json_data += "\"sensor_type\":";
   json_data += '"';
   json_data += "accelerometer";
