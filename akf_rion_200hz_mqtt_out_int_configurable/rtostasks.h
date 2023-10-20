@@ -54,17 +54,27 @@ void serial_handler(void *arguments) {
 }
 
 void led_status(void *arguments) {
-  pinMode(2, OUTPUT);
+  pinMode(LEDSTATUSPIN, OUTPUT);
   while(1){
     if (!client.connected() || WiFi.status() == WL_DISCONNECTED) {
-      digitalWrite(2, !digitalRead(2));
+      digitalWrite(LEDSTATUSPIN, !digitalRead(LEDSTATUSPIN));
       vTaskDelay(100 / portTICK_PERIOD_MS);
     }else{
-      digitalWrite(2, !digitalRead(2));
+      digitalWrite(LEDSTATUSPIN, 1);
+      vTaskDelay(10 / portTICK_PERIOD_MS);
+      digitalWrite(LEDSTATUSPIN,0);
+
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      
+      digitalWrite(LEDSTATUSPIN, 1);
+      vTaskDelay(10 / portTICK_PERIOD_MS);
+      digitalWrite(LEDSTATUSPIN,0);
       vTaskDelay(1000 / portTICK_PERIOD_MS);
+      
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
   }
+  
 }
 
 void sensor_reader( void * pvParameters ) {

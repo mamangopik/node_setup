@@ -42,7 +42,7 @@ void setup() {
   xTaskCreatePinnedToCore(
     led_status, 
     "led status",
-    1024, 
+    2048, 
     NULL, 
     2, 
     NULL, 

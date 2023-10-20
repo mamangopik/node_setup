@@ -14,6 +14,8 @@
 #define MSTR3 400
 #define MSTR4 500
 
+#define LEDSTATUSPIN 4
+
 // global objects 
 TaskHandle_t Task2;
 WiFiClient espClient;
