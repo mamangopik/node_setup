@@ -2,6 +2,7 @@
 
 void setup() {
   esp_task_wdt_init(0xffffffff, false);
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   EEPROM.begin(EEPROM_SIZE);
   Serial.begin(115200);
   vTaskDelay(5000 / portTICK_PERIOD_MS);
@@ -45,9 +46,6 @@ void setup() {
   ssid.toCharArray(buf_SSID, ssid.length() + 1);
   password.toCharArray(buf_PWD, password.length() + 1);
 
-  //add some delay to charge the capacitor before starting WiFi peripheral
-  vTaskDelay(5000 / portTICK_PERIOD_MS);
-  
   WiFi.mode(WIFI_STA);
   WiFi.begin(buf_SSID, buf_PWD);
   while (WiFi.status() != WL_CONNECTED) {

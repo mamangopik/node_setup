@@ -1,7 +1,10 @@
 #include <PubSubClient.h>
 #include <WiFi.h>
-#include <esp_task_wdt.h>
 #include <EEPROM.h>
+
+#include <esp_task_wdt.h>
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
 
 
 // user typedef
