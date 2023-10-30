@@ -2,7 +2,7 @@ void reconnect() {
   while (!client.connected()) {
     String channel = String(WiFi.macAddress());
     if (client.connect(channel.c_str())) {
-      Serial.println("broker connected");
+      Serial.println("{\"SUCCESS\":\"broker connected\"}");
     } else {
       vTaskDelay(5000 / portTICK_PERIOD_MS);
     }

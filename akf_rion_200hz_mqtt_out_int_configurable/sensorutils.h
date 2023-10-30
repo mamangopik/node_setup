@@ -1,6 +1,7 @@
 void cek_sensor() {
   if (millis() - sensor_wdg > 5000) {
-    Serial.println("sensor not responding, trying to recall");
+    Serial.println("{\"ERR\":\"sensor not responding, trying to recall\"}");
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
     ESP.restart();
   }
 }

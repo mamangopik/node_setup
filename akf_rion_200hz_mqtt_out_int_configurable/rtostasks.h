@@ -16,7 +16,8 @@ void mqtt_sender(void *arguments) {
     }
 
     if (WiFi.status() == WL_DISCONNECTED) {
-      Serial.println("wifi error");
+      Serial.println("{\"ERR\":\"WiFi Error\"}");
+      vTaskDelay(5000 / portTICK_PERIOD_MS);
       ESP.restart();
     }
     client.loop();

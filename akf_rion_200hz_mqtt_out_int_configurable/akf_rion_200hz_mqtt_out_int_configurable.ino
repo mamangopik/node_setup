@@ -51,11 +51,12 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     if (millis() - wlan_timer > 10000) {
-      Serial.println("WiFi Error");
+      Serial.println("{\"ERR\":\"WiFi Error\"}");
+      vTaskDelay(5000 / portTICK_PERIOD_MS);
       ESP.restart();
     }
   }
-  Serial.println("Connected to WiFi");
+  Serial.println("{\"SUCCESS\":\"Connected to WiFi\"}");
   vTaskDelay(1000 / portTICK_PERIOD_MS);
 
   xTaskCreatePinnedToCore(

@@ -1,3 +1,4 @@
+#/usr/bin/python3
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt,QThread,QObject
 from pyqtgraph import PlotWidget
@@ -114,7 +115,10 @@ class app(node_setup.Ui_MainWindow):
                 self.window1Main.tb_id.setText(serial_attributes['node_saved_info']['setup_var']['topic'])
                 serial_attributes['node_saved_info'] = {}
             except Exception as e:
-                print(e)
+                if len(str(serial_attributes['node_saved_info'])) >2:
+                    self.window1Main.tb_log.append(str(serial_attributes['node_saved_info']))
+                    serial_attributes['node_saved_info'] = {}
+                    print(e)
         try:
             if(self.serial_comm.serial.is_open):
                 self.window1Main.con_indicator.setStyleSheet("background-color: lime;border-radius:5px;")
@@ -218,12 +222,14 @@ class serial_comm():
             pass
 
 def read_serial_data(stop_event):
+    has_tag_open = False
     while not stop_event.is_set():
         try:
             try:
                 if len(serial_attributes['raw_serial_in'])>10:
                     serial_attributes['node_saved_info'] = json.loads(serial_attributes['raw_serial_in'])
                     serial_attributes['raw_serial_in'] = ""
+                    has_tag_open = False
                     print("data extracted from the node")
             except Exception as e:
                 print(e)
@@ -233,8 +239,11 @@ def read_serial_data(stop_event):
                 print (e)
                 data = None
             if data is not None:
-                t_waiting  = time.time()
-                serial_attributes['raw_serial_in']+=str(data)
+                for char in data:
+                    if char == '{':
+                        has_tag_open = True
+                if has_tag_open == True:
+                    serial_attributes['raw_serial_in']+=str(data)
                 print(serial_attributes['raw_serial_in'])
         except:
             pass
