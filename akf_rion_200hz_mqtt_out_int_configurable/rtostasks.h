@@ -1,6 +1,5 @@
 void mqtt_sender(void *arguments) {
   vTaskDelay(100 / portTICK_PERIOD_MS);
-
   const int mqtt_port = 1883;
   String broker = readString(MSTR2);
   broker.trim();
@@ -70,6 +69,7 @@ void led_status(void *arguments) {
 
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
+    Serial.println("[APP] Free memory: " + String(esp_get_free_heap_size()) + " bytes");
   }
 
 }

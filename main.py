@@ -117,6 +117,7 @@ class app(node_setup.Ui_MainWindow):
             except Exception as e:
                 if len(str(serial_attributes['node_saved_info'])) >2:
                     self.window1Main.tb_log.append(str(serial_attributes['node_saved_info']))
+                    self.window1Main.tb_log.moveCursor( QtGui.QTextCursor.End )
                     serial_attributes['node_saved_info'] = {}
                     print(e)
         try:
@@ -244,7 +245,7 @@ def read_serial_data(stop_event):
                         has_tag_open = True
                 if has_tag_open == True:
                     serial_attributes['raw_serial_in']+=str(data)
-                print(serial_attributes['raw_serial_in'])
+                    print(serial_attributes['raw_serial_in'])
         except:
             pass
         time.sleep(1/1000)
@@ -261,6 +262,3 @@ if __name__ == '__main__':
     }
 
     app(attributes)
-
-# Received data: SSID:SIMON BATAPA SHMS
-# Received data: len:17

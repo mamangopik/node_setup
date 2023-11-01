@@ -18,6 +18,7 @@
 #define MSTR4 500
 
 #define LEDSTATUSPIN 4
+#define VSENSE_PIN 33
 
 // global objects 
 TaskHandle_t Task2;
@@ -39,7 +40,7 @@ String msg_in = "";
 String sensor_topic = "";
 String raw = "";
 
-const int DATA_SIZE = 128;
+const int DATA_SIZE = 512;
 
 int x_values[2][DATA_SIZE];
 int y_values[2][DATA_SIZE];
@@ -53,6 +54,8 @@ unsigned long sensor_wdg = 0;
 unsigned long ts_timer = 0;
 unsigned long id_data = 0;
 unsigned long no_serial_in_wdg = 0;
+
+float v_batt = 0.0;
 
 // Function declarations
 

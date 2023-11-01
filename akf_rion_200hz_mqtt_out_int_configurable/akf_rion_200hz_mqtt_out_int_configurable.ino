@@ -5,6 +5,14 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   EEPROM.begin(EEPROM_SIZE);
   Serial.begin(115200);
+#ifdef VSENSE_PIN
+  Serial.println("{\"INFO\":\"Voltage sensor is available\"}");
+  pinMode(VSENSE_PIN,INPUT);
+  analogReadResolution(12); // 12-Bit res
+#endif
+#ifndef VSENSE_PIN
+  Serial.println("{\"INFO\":\"Voltage sensor is not available\"}");
+#endif
   vTaskDelay(5000 / portTICK_PERIOD_MS);
   xTaskCreatePinnedToCore(
     serial_handler,   /* Task function. */
