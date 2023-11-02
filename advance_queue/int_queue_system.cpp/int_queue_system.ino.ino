@@ -82,4 +82,5 @@ void loop() {
   if (digitalRead(0) == LOW)send_duration = 10;
   else send_duration = 1000;
   vTaskDelay(10 / portTICK_PERIOD_MS);
+  Serial.println("[APP] Free memory: " + String(esp_get_free_heap_size()/1024) + " KBytes");
 }
