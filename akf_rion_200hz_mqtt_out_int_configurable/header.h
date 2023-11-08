@@ -40,7 +40,7 @@ String msg_in = "";
 String sensor_topic = "";
 String raw = "";
 
-const int DATA_SIZE = 512;
+const int DATA_SIZE = 256;
 
 int x_values[2][DATA_SIZE];
 int y_values[2][DATA_SIZE];
