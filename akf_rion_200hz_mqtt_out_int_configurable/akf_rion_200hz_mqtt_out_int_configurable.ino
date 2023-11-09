@@ -59,6 +59,7 @@ void setup() {
     WiFi.mode(WIFI_STA);
     WiFi.begin(buf_SSID, buf_PWD);
     while (WiFi.status() != WL_CONNECTED) {
+      led_status_mode = CONNECTING_WIFI;
       delay(500);
       if (millis() - wlan_timer > 10000) {
         Serial.println("{\"ERR\":\"WiFi Error\"}");
@@ -77,6 +78,8 @@ void setup() {
       1,
       NULL,
       1);
+  }else{
+    Serial.println("{\"INFO\":\"low battery!\"}");
   }
 #endif
 #ifndef VSENSE_PIN

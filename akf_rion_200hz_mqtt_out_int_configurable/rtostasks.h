@@ -56,20 +56,38 @@ void serial_handler(void *arguments) {
 void led_status(void *arguments) {
   pinMode(LEDSTATUSPIN, OUTPUT);
   while (1) {
-    if (!client.connected() || WiFi.status() == WL_DISCONNECTED) {
-      digitalWrite(LEDSTATUSPIN, !digitalRead(LEDSTATUSPIN));
-      vTaskDelay(100 / portTICK_PERIOD_MS);
-    } else {
-      digitalWrite(LEDSTATUSPIN, 1);
+    switch (led_status_mode){
+    case CONNECTED:
+      LED_STATUS_SET;
       vTaskDelay(10 / portTICK_PERIOD_MS);
-      digitalWrite(LEDSTATUSPIN, 0);
-
-      digitalWrite(LEDSTATUSPIN, 0);
+      LED_STATUS_RESET;
       vTaskDelay(3000 / portTICK_PERIOD_MS);
-
+      break;
+    case DISCONNECTED:
+      LED_STATUS_TOGGLE;
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      break;
+    case LOWBATT:
+      LED_STATUS_SET;
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      LED_STATUS_RESET;
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      LED_STATUS_SET;
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      LED_STATUS_RESET;
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      LED_STATUS_SET;
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+      LED_STATUS_RESET;
+      vTaskDelay(3000 / portTICK_PERIOD_MS);
+      break;
+    case CONNECTING_WIFI:
+      LED_STATUS_TOGGLE;
+      break;
+    default:
+      LED_STATUS_RESET;
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
-    Serial.println("[APP] Free memory: " + String(esp_get_free_heap_size()) + " bytes");
   }
 
 }
@@ -93,6 +111,7 @@ void battery_status(void *arguments) {
       sum=0;
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
+    Serial.println("[APP] Free memory: " + String(esp_get_free_heap_size()) + " bytes");
   }
 #endif
 #ifndef VSENSE_PIN

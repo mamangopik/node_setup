@@ -1,7 +1,9 @@
 void reconnect() {
   while (!client.connected()) {
+    led_status_mode = DISCONNECTED;
     String channel = String(WiFi.macAddress());
     if (client.connect(channel.c_str())) {
+      led_status_mode = CONNECTED;
       Serial.println("{\"SUCCESS\":\"broker connected\"}");
     } else {
       vTaskDelay(5000 / portTICK_PERIOD_MS);

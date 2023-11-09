@@ -20,6 +20,16 @@
 #define LEDSTATUSPIN 4
 #define VSENSE_PIN 33
 
+#define DISCONNECTED 0
+#define CONNECTED 1
+#define LOWBATT 2
+#define CONNECTING_WIFI 3
+
+
+#define LED_STATUS_SET digitalWrite(LEDSTATUSPIN, 1)
+#define LED_STATUS_RESET digitalWrite(LEDSTATUSPIN, 0)
+#define LED_STATUS_TOGGLE digitalWrite(LEDSTATUSPIN, !digitalRead(LEDSTATUSPIN))
+
 // global objects 
 TaskHandle_t Task2;
 WiFiClient espClient;
@@ -35,6 +45,7 @@ byte checksum[1];
 byte buffer_mon = 0;
 byte buffer_0_ready = 0;
 byte buffer_1_ready = 0;
+byte led_status_mode = 0;
 
 String msg_in = "";
 String sensor_topic = "";
