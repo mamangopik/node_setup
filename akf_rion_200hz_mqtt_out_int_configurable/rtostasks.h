@@ -11,7 +11,10 @@ void mqtt_sender(void *arguments) {
 
   while (1) {
     if (!client.connected()) {
+      led_status_mode = DISCONNECTED;
       reconnect();
+    }else{
+      led_status_mode = CONNECTED;
     }
 
     if (WiFi.status() == WL_DISCONNECTED) {
@@ -106,12 +109,22 @@ void battery_status(void *arguments) {
     i++;
     if(i==100){
       v_batt = sum/100.0;
-      Serial.println(v_batt);
       i=0;
       sum=0;
+      // Serial.println("{\"INFO\":\"VBATT: " + String(v_batt) + "Volts\"}");
+      // Serial.println("{\"INFO\":\"[APP] Free memory: " + String(esp_get_free_heap_size()) + " bytes\"}");
+      // Serial.println("{\"INFO\":\"RSSI: " + String(WiFi.RSSI()) + " dBm\"}");
+      if(v_batt<3.0){
+        // if battery voltage below 3.0 Volts
+        led_status_mode = LOWBATT;
+      }
+      //if battery got charged
+      if(led_status_mode == LOWBATT && v_batt>=3.0)    {
+        Serial.println("{\"INFO\":\"SW reset\"}");
+        ESP.restart();
+      }
     }
     vTaskDelay(10 / portTICK_PERIOD_MS);
-    Serial.println("[APP] Free memory: " + String(esp_get_free_heap_size()) + " bytes");
   }
 #endif
 #ifndef VSENSE_PIN
@@ -120,6 +133,31 @@ void battery_status(void *arguments) {
     vTaskDelay(100 / portTICK_PERIOD_MS);
   }
 #endif
+}
+
+void hardware_status(void *arguments) {
+  while (1) {
+    String payload = "";
+#ifdef VSENSE_PIN
+    payload+= "{";
+    payload+= "\"hardware_info\":{\n";
+    payload+= "\t\t\"battery_voltage\":"+String(v_batt)+",\n";
+    payload+= "\t\t\"RSSI\":"+String(WiFi.RSSI())+",\n";
+    payload+= "\t\t\"free_memory\":"+String(esp_get_free_heap_size())+"\n";
+    payload+= "\t}\n";
+    payload+= "}";
+#endif
+#ifndef VSENSE_PIN
+    payload+= "{";
+    payload+= "\t\t\"hardware_info\":{\n";
+    payload+= "\t\t\"RSSI\":"+String(WiFi.RSSI())+",\n";
+    payload+= "\t\t\"free_memory\":"+String(esp_get_free_heap_size())+"\n";
+    payload+= "\t}\n";
+    payload+= "}";
+#endif
+    Serial.println(payload);
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+  }
 }
 
 void sensor_reader( void * pvParameters ) {

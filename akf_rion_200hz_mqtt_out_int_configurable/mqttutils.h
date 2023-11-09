@@ -40,8 +40,8 @@ void publish_buffer(byte buffer_loc) {
   json_data += '"';
   json_data += "accelerometer";
   json_data += '"';
-  json_data += ",\"battery_voltage\":";
-  json_data += String(v_batt);
+  json_data += ",\"battery_voltage\":"+String(v_batt);
+  json_data += ",\"signal_strength\":"+String(WiFi.RSSI());
   json_data += "}";
 #endif
 #ifndef VSENSE_PIN
@@ -70,6 +70,7 @@ void publish_buffer(byte buffer_loc) {
   json_data += "],";
   json_data += "\"sensor_type\":";
   json_data += "\"accelerometer\"";
+  json_data += ",\"signal_strength\":"+String(WiFi.RSSI());
   json_data += "}";
 #endif
 

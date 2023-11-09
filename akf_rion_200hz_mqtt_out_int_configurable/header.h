@@ -45,7 +45,7 @@ byte checksum[1];
 byte buffer_mon = 0;
 byte buffer_0_ready = 0;
 byte buffer_1_ready = 0;
-byte led_status_mode = 0;
+byte led_status_mode = DISCONNECTED;
 
 String msg_in = "";
 String sensor_topic = "";

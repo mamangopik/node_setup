@@ -5,7 +5,6 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   EEPROM.begin(EEPROM_SIZE);
   Serial.begin(115200);
-  vTaskDelay(5000 / portTICK_PERIOD_MS);
 
   xTaskCreatePinnedToCore(
     battery_status,
@@ -33,6 +32,9 @@ void setup() {
     1,           /* priority of the task */
     NULL,      /* Task handle to keep track of created task */
     1);          /* pin task to core 1 */
+
+  // add some delay to make sure the battery voltage is already meassured
+  vTaskDelay(5000 / portTICK_PERIOD_MS);
 #ifdef VSENSE_PIN
   if(v_batt>3.0){
     xTaskCreatePinnedToCore(
@@ -126,6 +128,14 @@ void setup() {
     NULL,
     1);
 #endif
+  xTaskCreatePinnedToCore(
+    hardware_status,
+    "hardware status",
+    2048,
+    NULL,
+    4,
+    NULL,
+    1);
 }
 
 void loop() {
