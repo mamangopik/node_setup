@@ -11,9 +11,6 @@ void reconnect() {
 
 void publish_buffer(byte buffer_loc) {
 #ifdef VSENSE_PIN
-  int rawValue = analogRead(VSENSE_PIN  );
-  v_batt = 0.4 + (3.3 / 4095.0) * rawValue * ((10000 + 4700) / 4700);
-
   String json_data = "{";
   json_data += "\"x_values\":[";
   for (int i = 0; i < DATA_SIZE; i++) {

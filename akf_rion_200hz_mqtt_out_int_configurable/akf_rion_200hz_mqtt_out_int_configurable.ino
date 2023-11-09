@@ -5,15 +5,26 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   EEPROM.begin(EEPROM_SIZE);
   Serial.begin(115200);
-#ifdef VSENSE_PIN
-  Serial.println("{\"INFO\":\"Voltage sensor is available\"}");
-  pinMode(VSENSE_PIN,INPUT);
-  analogReadResolution(12); // 12-Bit res
-#endif
-#ifndef VSENSE_PIN
-  Serial.println("{\"INFO\":\"Voltage sensor is not available\"}");
-#endif
   vTaskDelay(5000 / portTICK_PERIOD_MS);
+
+  xTaskCreatePinnedToCore(
+    battery_status,
+    "battery status",
+    2048,
+    NULL,
+    2,
+    NULL,
+    1);
+
+  xTaskCreatePinnedToCore(
+    led_status,
+    "led status",
+    2048,
+    NULL,
+    3,
+    NULL,
+    1);
+
   xTaskCreatePinnedToCore(
     serial_handler,   /* Task function. */
     "serial handler",     /* name of task. */
@@ -22,8 +33,53 @@ void setup() {
     1,           /* priority of the task */
     NULL,      /* Task handle to keep track of created task */
     1);          /* pin task to core 1 */
+#ifdef VSENSE_PIN
+  if(v_batt>3.0){
+    xTaskCreatePinnedToCore(
+      sensor_reader,
+      "sensor reader",
+      2048,
+      NULL,
+      1,
+      &Task2,
+      0);
 
+    wlan_timer = millis();
+    String ssid = readString(MSTR0);
+    String password = readString(MSTR1);
+    sensor_topic = readString(MSTR3);
 
+    ssid.trim();
+    password.trim();
+    char buf_SSID[100];
+    char buf_PWD[100];
+    ssid.toCharArray(buf_SSID, ssid.length() + 1);
+    password.toCharArray(buf_PWD, password.length() + 1);
+
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(buf_SSID, buf_PWD);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      if (millis() - wlan_timer > 10000) {
+        Serial.println("{\"ERR\":\"WiFi Error\"}");
+        vTaskDelay(5000 / portTICK_PERIOD_MS);
+        ESP.restart();
+      }
+    }
+    Serial.println("{\"SUCCESS\":\"Connected to WiFi\"}");
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    xTaskCreatePinnedToCore(
+      mqtt_sender,
+      "mqtt sender",
+      2048,
+      NULL,
+      1,
+      NULL,
+      1);
+  }
+#endif
+#ifndef VSENSE_PIN
   xTaskCreatePinnedToCore(
     sensor_reader,
     "sensor reader",
@@ -32,15 +88,6 @@ void setup() {
     1,
     &Task2,
     0);
-
-  xTaskCreatePinnedToCore(
-    led_status,
-    "led status",
-    2048,
-    NULL,
-    2,
-    NULL,
-    1);
 
   wlan_timer = millis();
   String ssid = readString(MSTR0);
@@ -75,6 +122,7 @@ void setup() {
     1,
     NULL,
     1);
+#endif
 }
 
 void loop() {
