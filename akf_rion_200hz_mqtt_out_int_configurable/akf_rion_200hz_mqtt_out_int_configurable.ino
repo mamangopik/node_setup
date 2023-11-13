@@ -21,7 +21,7 @@ void setup() {
     NULL,        /* parameter of the task */
     1,           /* priority of the task */
     NULL,      /* Task handle to keep track of created task */
-    1);          /* pin task to core 1 */
+    0);          /* pin task to core 1 */
 
 
   xTaskCreatePinnedToCore(
@@ -31,7 +31,7 @@ void setup() {
     NULL,
     1,
     &Task2,
-    0);
+    1);
 
   xTaskCreatePinnedToCore(
     led_status,
@@ -40,7 +40,7 @@ void setup() {
     NULL,
     2,
     NULL,
-    1);
+    0);
 
   wlan_timer = millis();
   String ssid = readString(MSTR0);
@@ -72,9 +72,9 @@ void setup() {
     "mqtt sender",
     2048,
     NULL,
-    1,
+    0,
     NULL,
-    1);
+    0);
 }
 
 void loop() {

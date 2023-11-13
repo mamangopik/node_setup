@@ -87,7 +87,7 @@ void publish_buffer(byte buffer_loc) {
   char buf_sensor_topic[100];
   sensor_topic.toCharArray(buf_sensor_topic, sensor_topic.length() + 1);
 
-  if (client.publish(buf_sensor_topic, json_data.c_str(), json_data.length(), false, 1)) {
+  if (client.publish(buf_sensor_topic, json_data.c_str(), json_data.length(), false, 0)) {
     Serial.println("{\"SUCCESS\":\"Message sent\"}");
   } else {
     Serial.println("{\"ERR\":\"Message doesn't sent\"}");

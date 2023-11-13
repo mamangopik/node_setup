@@ -28,7 +28,7 @@ TaskHandle_t Task2;
 // PubSubClient client(espClient);
 
 WiFiClient net;
-MQTTClient client;
+MQTTClient client(128,128);
 
 // global variables 
 byte counter = 0;
@@ -44,7 +44,7 @@ String msg_in = "";
 String sensor_topic = "";
 String raw = "";
 
-const int DATA_SIZE = 512;
+const int DATA_SIZE = 256;
 
 int x_values[2][DATA_SIZE];
 int y_values[2][DATA_SIZE];

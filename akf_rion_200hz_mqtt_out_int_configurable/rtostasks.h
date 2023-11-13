@@ -6,6 +6,8 @@ void mqtt_sender(void *arguments) {
   char buf_broker[100];
   broker.toCharArray(buf_broker, broker.length() + 1);
   String topic = readString(MSTR3);
+  client.setTimeout(1000);
+  // client.setKeepAlive(10);
   client.begin(buf_broker, net);
   while (1) {
 
@@ -28,7 +30,7 @@ void mqtt_sender(void *arguments) {
       publish_buffer(1);
       buffer_1_ready = 0;
     }
-    vTaskDelay(2 / portTICK_PERIOD_MS);
+    vTaskDelay(1 / portTICK_PERIOD_MS);
   }
 }
 
