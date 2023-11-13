@@ -1,12 +1,14 @@
-void reconnect() {
-  while (!client.connected()) {
-    String channel = String(WiFi.macAddress());
-    if (client.connect(channel.c_str())) {
-      Serial.println("{\"SUCCESS\":\"broker connected\"}");
-    } else {
-      vTaskDelay(5000 / portTICK_PERIOD_MS);
-    }
+
+
+void connect() {
+  String channel = String(WiFi.macAddress());
+  Serial.print("\nconnecting...");
+  connection_counter++;
+  while (!client.connect(channel.c_str(), "public", "public")) {
+    Serial.print(".");
+    delay(100);
   }
+  Serial.println("\nconnected!");
 }
 
 void publish_buffer(byte buffer_loc) {
@@ -43,6 +45,9 @@ void publish_buffer(byte buffer_loc) {
   json_data += '"';
   json_data += ",\"battery_voltage\":";
   json_data += String(v_batt);
+  json_data += ",\"signal_strength\":"+String(WiFi.RSSI());
+  json_data += ",\"id_data\":"+String(id_data);
+  json_data += ",\"connection_lost\":"+String(connection_counter);
   json_data += "}";
 #endif
 #ifndef VSENSE_PIN
@@ -71,6 +76,9 @@ void publish_buffer(byte buffer_loc) {
   json_data += "],";
   json_data += "\"sensor_type\":";
   json_data += "\"accelerometer\"";
+  json_data += ",\"signal_strength\":"+String(WiFi.RSSI());
+  json_data += ",\"id_data\":"+String(id_data);
+  json_data += ",\"connection_lost\":"+String(connection_counter);
   json_data += "}";
 #endif
 
@@ -79,10 +87,9 @@ void publish_buffer(byte buffer_loc) {
   char buf_sensor_topic[100];
   sensor_topic.toCharArray(buf_sensor_topic, sensor_topic.length() + 1);
 
-  if (client.publish(buf_sensor_topic, json_data.c_str())) {
+  if (client.publish(buf_sensor_topic, json_data.c_str(), json_data.length(), false, 1)) {
     Serial.println("{\"SUCCESS\":\"Message sent\"}");
   } else {
     Serial.println("{\"ERR\":\"Message doesn't sent\"}");
   }
-  //  id_data++;
 }

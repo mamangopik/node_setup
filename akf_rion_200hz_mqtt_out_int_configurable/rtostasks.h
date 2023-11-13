@@ -5,13 +5,13 @@ void mqtt_sender(void *arguments) {
   broker.trim();
   char buf_broker[100];
   broker.toCharArray(buf_broker, broker.length() + 1);
-  client.setServer(buf_broker, mqtt_port);
-  boolean res = client.setBufferSize(0xffff - 1);
   String topic = readString(MSTR3);
-
+  client.begin(buf_broker, net);
   while (1) {
+
+    client.loop();
     if (!client.connected()) {
-      reconnect();
+      connect();
     }
 
     if (WiFi.status() == WL_DISCONNECTED) {
@@ -19,7 +19,6 @@ void mqtt_sender(void *arguments) {
       vTaskDelay(5000 / portTICK_PERIOD_MS);
       ESP.restart();
     }
-    client.loop();
 
     if (buffer_0_ready == 1) {
       publish_buffer(0);

@@ -94,6 +94,7 @@ void process_command() {
     // Serial.println(" ms");
     String timedata = String(duration);
     start_time = millis(); // Start new time measurement
+    id_data++; //increment packet ID
   }
 }
 

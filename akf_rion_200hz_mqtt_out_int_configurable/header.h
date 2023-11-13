@@ -1,6 +1,9 @@
-#include <PubSubClient.h>
-#include <WiFi.h>
+// #include <PubSubClient.h>
+// #include <WiFi.h>
 #include <EEPROM.h>
+
+#include <WiFi.h>
+#include <MQTT.h>
 
 #include <esp_task_wdt.h>
 #include "soc/soc.h"
@@ -19,12 +22,13 @@
 
 #define LEDSTATUSPIN 4
 #define VSENSE_PIN 33
-
 // global objects 
 TaskHandle_t Task2;
-WiFiClient espClient;
-PubSubClient client(espClient);
+// WiFiClient espClient;
+// PubSubClient client(espClient);
 
+WiFiClient net;
+MQTTClient client;
 
 // global variables 
 byte counter = 0;
@@ -40,7 +44,7 @@ String msg_in = "";
 String sensor_topic = "";
 String raw = "";
 
-const int DATA_SIZE = 256;
+const int DATA_SIZE = 512;
 
 int x_values[2][DATA_SIZE];
 int y_values[2][DATA_SIZE];
@@ -54,6 +58,7 @@ unsigned long sensor_wdg = 0;
 unsigned long ts_timer = 0;
 unsigned long id_data = 0;
 unsigned long no_serial_in_wdg = 0;
+unsigned long connection_counter = 0;
 
 float v_batt = 0.0;
 
