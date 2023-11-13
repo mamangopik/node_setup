@@ -20,7 +20,7 @@ void setup() {
     2048,       /* Stack size of task */
     NULL,        /* parameter of the task */
     1,           /* priority of the task */
-    NULL,      /* Task handle to keep track of created task */
+    &SERIAL_TASK,      /* Task handle to keep track of created task */
     0);          /* pin task to core 1 */
 
 
@@ -30,7 +30,7 @@ void setup() {
     2048,
     NULL,
     1,
-    &Task2,
+    &SENSOR_TASK,
     1);
 
   xTaskCreatePinnedToCore(
@@ -39,7 +39,7 @@ void setup() {
     2048,
     NULL,
     2,
-    NULL,
+    &LED_TASK,
     0);
 
   wlan_timer = millis();
@@ -73,7 +73,7 @@ void setup() {
     2048,
     NULL,
     0,
-    NULL,
+    &MQTT_TASK,
     0);
 }
 

@@ -9,7 +9,10 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 
-
+TaskHandle_t SENSOR_TASK;
+TaskHandle_t MQTT_TASK;
+TaskHandle_t LED_TASK;
+TaskHandle_t SERIAL_TASK;
 // user typedef
 #define RXD2 16
 #define TXD2 17
@@ -22,13 +25,14 @@
 
 #define LEDSTATUSPIN 4
 #define VSENSE_PIN 33
+#define QoS 2
 // global objects 
 TaskHandle_t Task2;
 // WiFiClient espClient;
 // PubSubClient client(espClient);
 
 WiFiClient net;
-MQTTClient client(128,128);
+MQTTClient client(256,256);
 
 // global variables 
 byte counter = 0;
@@ -44,7 +48,7 @@ String msg_in = "";
 String sensor_topic = "";
 String raw = "";
 
-const int DATA_SIZE = 256;
+const int DATA_SIZE = 1024;
 
 int x_values[2][DATA_SIZE];
 int y_values[2][DATA_SIZE];

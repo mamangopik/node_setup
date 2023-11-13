@@ -6,7 +6,7 @@ void mqtt_sender(void *arguments) {
   char buf_broker[100];
   broker.toCharArray(buf_broker, broker.length() + 1);
   String topic = readString(MSTR3);
-  client.setTimeout(1000);
+  client.setTimeout(5000);
   // client.setKeepAlive(10);
   client.begin(buf_broker, net);
   while (1) {
@@ -22,12 +22,20 @@ void mqtt_sender(void *arguments) {
       ESP.restart();
     }
 
-    if (buffer_0_ready == 1) {
+    if (buffer_0_ready == 1 && client.connected()) {
+      vTaskSuspend(LED_TASK);
+      vTaskSuspend(SERIAL_TASK);
       publish_buffer(0);
+      vTaskResume(LED_TASK);
+      vTaskResume(SERIAL_TASK);
       buffer_0_ready = 0;
     }
-    if (buffer_1_ready == 1) {
+    if (buffer_1_ready == 1 && client.connected()) {
+      vTaskSuspend(LED_TASK);
+      vTaskSuspend(SERIAL_TASK);
       publish_buffer(1);
+      vTaskResume(LED_TASK);
+      vTaskResume(SERIAL_TASK);
       buffer_1_ready = 0;
     }
     vTaskDelay(1 / portTICK_PERIOD_MS);
