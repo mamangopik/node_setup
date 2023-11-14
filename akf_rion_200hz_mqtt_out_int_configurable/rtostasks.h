@@ -19,27 +19,13 @@ void mqtt_sender(void *arguments) {
       Serial.println("{\"ERR\":\"WiFi Error\"}");
       vTaskDelay(5000 / portTICK_PERIOD_MS);
       ESP.restart();
-    }
-
-    if (buffer_0_ready == 1 && client.connected()) {
-      // suspend tasks that run on core 1
-      vTaskSuspend(LED_TASK);
-      vTaskSuspend(SERIAL_TASK);
-      publish_buffer(0);
-      // resume tasks that run on core 1
-      vTaskResume(LED_TASK);
-      vTaskResume(SERIAL_TASK);
-      buffer_0_ready = 0;
-    }
-    if (buffer_1_ready == 1 && client.connected()) {
-      // resume tasks that run on core 1
-      vTaskSuspend(LED_TASK);
-      vTaskSuspend(SERIAL_TASK);
-      publish_buffer(1);
-      // resume tasks that run on core 1
-      vTaskResume(LED_TASK);
-      vTaskResume(SERIAL_TASK);
-      buffer_1_ready = 0;
+    }   
+    
+    for(byte i=0;i<BANK_SIZE;i++){
+      if (buffer_ready[i] == 1 && client.connected()) {
+        publish_buffer(i);
+        buffer_ready[i] = 0;
+      }
     }
     vTaskDelay(1 / portTICK_PERIOD_MS);
   }

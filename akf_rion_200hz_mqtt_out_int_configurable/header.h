@@ -1,5 +1,3 @@
-// #include <PubSubClient.h>
-// #include <WiFi.h>
 #include <EEPROM.h>
 
 #include <WiFi.h>
@@ -9,10 +7,6 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 
-TaskHandle_t SENSOR_TASK;
-TaskHandle_t MQTT_TASK;
-TaskHandle_t LED_TASK;
-TaskHandle_t SERIAL_TASK;
 // user typedef
 #define RXD2 16
 #define TXD2 17
@@ -27,10 +21,10 @@ TaskHandle_t SERIAL_TASK;
 #define VSENSE_PIN 33
 #define QoS 2
 // global objects 
-TaskHandle_t Task2;
-// WiFiClient espClient;
-// PubSubClient client(espClient);
-
+TaskHandle_t SENSOR_TASK;
+TaskHandle_t MQTT_TASK;
+TaskHandle_t LED_TASK;
+TaskHandle_t SERIAL_TASK;
 WiFiClient net;
 MQTTClient client(256,256);
 
@@ -40,21 +34,22 @@ byte found = 0;
 byte command[14];
 byte header[4];
 byte checksum[1];
-byte buffer_mon = 0;
-byte buffer_0_ready = 0;
-byte buffer_1_ready = 0;
+unsigned int buffer_mon = 0;
 
 String msg_in = "";
 String sensor_topic = "";
 String raw = "";
 
-const int DATA_SIZE = 1024;
+const int DATA_SIZE = 256;
+const int BANK_SIZE = 50;
 
-int x_values[2][DATA_SIZE];
-int y_values[2][DATA_SIZE];
-int z_values[2][DATA_SIZE];
+short x_values[BANK_SIZE][DATA_SIZE];
+short y_values[BANK_SIZE][DATA_SIZE];
+short z_values[BANK_SIZE][DATA_SIZE];
 int data_count = 0;
 int last_ts = 0;
+
+byte buffer_ready[BANK_SIZE]={0};
 
 unsigned long start_time = 0;
 unsigned long wlan_timer = 0;

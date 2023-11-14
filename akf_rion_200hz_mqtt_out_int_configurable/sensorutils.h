@@ -58,40 +58,24 @@ void process_command() {
   if (calculated_checksum == checksum[0]) {
     if (x_value >= -4000 && x_value <= 4000 && y_value >= -4000 && y_value <= 4000 && z_value >= -4000 && z_value <= 4000) {
       // Store data in arrays
-      if (buffer_mon == 0) {
-        x_values[0][data_count] = x_value;
-        y_values[0][data_count] = y_value;
-        z_values[0][data_count] = z_value;
-        data_count++;
-      }
-      if (buffer_mon == 1) {
-        x_values[1][data_count] = x_value;
-        y_values[1][data_count] = y_value;
-        z_values[1][data_count] = z_value;
-        data_count++;
-      }
+      x_values[buffer_mon][data_count] = x_value;
+      y_values[buffer_mon][data_count] = y_value;
+      z_values[buffer_mon][data_count] = z_value;
+      data_count++;
     }
   }
   if (data_count == DATA_SIZE) {
-    //switch buffer
-    if (buffer_mon == 0) {
-      buffer_0_ready = 1;
-      buffer_mon = 1;
-      //            Serial.println ("buffer 0 rady, saving on buffer 1");
-    }
-    else {
-      buffer_1_ready = 1;
+    Serial.print("before: ");Serial.println(buffer_mon);
+
+    buffer_ready[buffer_mon] = 1;
+    buffer_mon ++;
+    if(buffer_mon==BANK_SIZE){
       buffer_mon = 0;
-      //            Serial.println ("buffer 1 rady, saving on buffer 0");
     }
+    Serial.print("after: ");Serial.println(buffer_mon);
+    
     data_count = 0; // Reset arrays
     unsigned long duration = millis() - start_time;
-    // Serial.print("Data collection duration: ");
-    // Serial.print(duration);
-    // Serial.println(" ms");
-    // Serial.print("T sampling: ");
-    // Serial.print((float)(duration / 256));
-    // Serial.println(" ms");
     String timedata = String(duration);
     start_time = millis(); // Start new time measurement
     id_data++; //increment packet ID

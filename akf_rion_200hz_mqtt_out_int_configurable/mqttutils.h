@@ -1,17 +1,18 @@
-
-
 void connect() {
   String channel = String(WiFi.macAddress());
   Serial.print("\nconnecting...");
   connection_counter++;
   while (!client.connect(channel.c_str(), "public", "public")) {
     Serial.print(".");
-    delay(100);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
   }
   Serial.println("\nconnected!");
 }
 
 void publish_buffer(byte buffer_loc) {
+  // suspend tasks that run on core 1
+  vTaskSuspend(LED_TASK);
+  vTaskSuspend(SERIAL_TASK);
 #ifdef VSENSE_PIN
   int rawValue = analogRead(VSENSE_PIN  );
   v_batt = 0.4 + (3.3 / 4095.0) * rawValue * ((10000 + 4700) / 4700);
@@ -92,4 +93,7 @@ void publish_buffer(byte buffer_loc) {
   } else {
     Serial.println("{\"ERR\":\"Message doesn't sent\"}");
   }
+  // resume tasks that run on core 1
+  vTaskResume(LED_TASK);
+  vTaskResume(SERIAL_TASK);
 }
