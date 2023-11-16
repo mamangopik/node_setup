@@ -60,6 +60,7 @@ class app(node_setup.Ui_MainWindow):
         self.window1Main.btn_read.clicked.connect(self.read_device_info)
         self.window1Main.btn_sync_rtc.clicked.connect(self.rtc_sync)
         self.window1Main.lb_port.itemDoubleClicked.connect(self.port_clicked)
+        self.window1Main.battery_bar.setValue(0)
 
         self.window1Main.retranslateUi(window)
         window.show()
@@ -85,6 +86,16 @@ class app(node_setup.Ui_MainWindow):
         }
         setup_data = str(json.dumps(setup_data))
         self.serial_comm.transmit(f">setdata:{setup_data}")
+    
+    def v_to_percent(self,voltage):
+        # Define the minimum and maximum voltage values
+        min_voltage = 3.0
+        max_voltage = 4.2
+        # Ensure that the voltage is within the valid range
+        voltage = max(min(voltage, max_voltage), min_voltage)
+        # Scale the voltage to a percentage between 0 and 100
+        percentage = ((voltage - min_voltage) / (max_voltage - min_voltage)) * 100
+        return percentage
 
     def read_device_info(self):
         if(self.serial_comm.serial.is_open):
@@ -117,9 +128,28 @@ class app(node_setup.Ui_MainWindow):
             except Exception as e:
                 if len(str(serial_attributes['node_saved_info'])) >2:
                     self.window1Main.tb_log.append(str(serial_attributes['node_saved_info']))
+                    self.window1Main.tb_log.append("\n")
                     self.window1Main.tb_log.moveCursor( QtGui.QTextCursor.End )
+
+                    # extraction
+                    try:
+                        if serial_attributes['node_saved_info']['hardware_info']:
+                            hardware_info = serial_attributes['node_saved_info']['hardware_info']
+                            print("===================================================")
+                            print(hardware_info)
+                            print(hardware_info['RSSI'])
+                            print("===================================================")
+                            v_batt = self.v_to_percent(float(hardware_info['battery_voltage']))
+                            self.window1Main.rssi.setText(str(hardware_info['RSSI']))
+                            self.window1Main.qos.setText(str(hardware_info['node_qos']))
+                            self.window1Main.battery_bar.setValue(v_batt)
+                    except:
+                        pass
+
                     serial_attributes['node_saved_info'] = {}
-                    print(e)
+                    
+
+                print(e)
         try:
             if(self.serial_comm.serial.is_open):
                 self.window1Main.con_indicator.setStyleSheet("background-color: lime;border-radius:5px;")

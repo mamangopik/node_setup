@@ -60,7 +60,7 @@ void process_command() {
       // Store data in arrays
       x_values[buffer_mon][data_count] = x_value;
       y_values[buffer_mon][data_count] = y_value;
-      z_values[buffer_mon][data_count] = z_value;
+      z_ptr[buffer_mon][data_count] = z_value;
       data_count++;
     }
   }

@@ -5,6 +5,7 @@ void setup() {
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   EEPROM.begin(EEPROM_SIZE);
   Serial.begin(115200);
+  
 #ifdef VSENSE_PIN
   Serial.println("{\"INFO\":\"Voltage sensor is available\"}");
   pinMode(VSENSE_PIN,INPUT);

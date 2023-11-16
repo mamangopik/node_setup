@@ -46,6 +46,7 @@ const int BANK_SIZE = 50;
 short x_values[BANK_SIZE][DATA_SIZE];
 short y_values[BANK_SIZE][DATA_SIZE];
 short z_values[BANK_SIZE][DATA_SIZE];
+// short (*z_ptr)[BANK_SIZE] = malloc(sizeof(short[BANK_SIZE][DATA_SIZE]));
 int data_count = 0;
 int last_ts = 0;
 
