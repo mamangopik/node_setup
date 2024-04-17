@@ -96,15 +96,15 @@ class app(node_setup.Ui_MainWindow):
         current_datetime = datetime.now()
         # Extract date and time components
         date_components = {
-            "year": current_datetime.year,
-            "month": current_datetime.month,
-            "day": current_datetime.day,
-            "hour": current_datetime.hour,
-            "minute": current_datetime.minute,
-            "second": current_datetime.second
+            "year":   str(current_datetime.year),
+            "month":  str(current_datetime.month),
+            "day":    str(current_datetime.day),
+            "hour":   str(current_datetime.hour),
+            "minute": str(current_datetime.minute),
+            "second": str(current_datetime.second)
         }
         json_string = json.dumps(date_components)
-        self.serial_comm.transmit(f">setdata:{json_string}")
+        self.serial_comm.transmit(f">settime:{json_string}")
 
     def update(self):
         if serial_attributes['node_saved_info'] is not {}:
